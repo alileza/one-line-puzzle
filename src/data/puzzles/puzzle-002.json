@@ -1,0 +1,28 @@
+{
+  "id": 2,
+  "name": "Two Dots",
+  "difficulty": 1,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": { "x": 75, "y": 100 },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": { "x": 225, "y": 100 },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "dot",
+      "position": { "x": 150, "y": 300 },
+      "radius": 15
+    }
+  ],
+  "startHint": { "x": 75, "y": 100 }
+}

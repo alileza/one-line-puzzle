@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://one-line-puzzle.game/schemas/puzzle.json",
+  "title": "Puzzle",
+  "description": "A puzzle level definition for One Line Too Many",
+  "type": "object",
+  "required": ["id", "name", "difficulty", "boardWidth", "boardHeight", "elements"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Unique puzzle identifier"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "description": "Display name for the puzzle"
+    },
+    "difficulty": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Difficulty rating (1=easy, 5=hard)"
+    },
+    "boardWidth": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Board width in game units"
+    },
+    "boardHeight": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Board height in game units"
+    },
+    "elements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/BoardElement"
+      },
+      "description": "All interactive elements on the board"
+    },
+    "startHint": {
+      "$ref": "#/definitions/Point",
+      "description": "Optional suggested starting position"
+    }
+  },
+  "definitions": {
+    "Point": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": {
+          "type": "number",
+          "description": "Horizontal coordinate"
+        },
+        "y": {
+          "type": "number",
+          "description": "Vertical coordinate"
+        }
+      },
+      "additionalProperties": false
+    },
+    "BoardElement": {
+      "oneOf": [
+        { "$ref": "#/definitions/Dot" },
+        { "$ref": "#/definitions/Shape" },
+        { "$ref": "#/definitions/RedArea" }
+      ]
+    },
+    "Dot": {
+      "type": "object",
+      "required": ["id", "type", "position", "radius"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Unique element ID within puzzle"
+        },
+        "type": {
+          "const": "dot"
+        },
+        "position": {
+          "$ref": "#/definitions/Point",
+          "description": "Center position of the dot"
+        },
+        "radius": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Touch detection radius"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Shape": {
+      "type": "object",
+      "required": ["id", "type", "position", "vertices"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Unique element ID within puzzle"
+        },
+        "type": {
+          "const": "shape"
+        },
+        "position": {
+          "$ref": "#/definitions/Point",
+          "description": "Center reference point for rendering"
+        },
+        "vertices": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/definitions/Point"
+          },
+          "description": "Polygon vertices in clockwise or counter-clockwise order"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RedArea": {
+      "type": "object",
+      "required": ["id", "type", "position", "vertices"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Unique element ID within puzzle"
+        },
+        "type": {
+          "const": "red-area"
+        },
+        "position": {
+          "$ref": "#/definitions/Point",
+          "description": "Center reference point for rendering"
+        },
+        "vertices": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/definitions/Point"
+          },
+          "description": "Polygon vertices defining forbidden zone"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

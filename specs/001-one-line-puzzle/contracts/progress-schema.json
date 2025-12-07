@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://one-line-puzzle.game/schemas/progress.json",
+  "title": "PlayerProgress",
+  "description": "Player progress data stored in localStorage",
+  "type": "object",
+  "required": ["version", "completedLevels", "highestUnlocked"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Schema version for migration support"
+    },
+    "completedLevels": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true,
+      "description": "Array of completed puzzle IDs"
+    },
+    "highestUnlocked": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Highest unlocked puzzle level"
+    },
+    "lastPlayed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last play session"
+    }
+  },
+  "additionalProperties": false
+}

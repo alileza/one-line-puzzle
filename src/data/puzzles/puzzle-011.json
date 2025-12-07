@@ -1,0 +1,50 @@
+{
+  "id": 11,
+  "name": "The Squeeze",
+  "difficulty": 3,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": { "x": 50, "y": 200 },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": { "x": 250, "y": 200 },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "dot",
+      "position": { "x": 150, "y": 100 },
+      "radius": 15
+    },
+    {
+      "id": 4,
+      "type": "red-area",
+      "position": { "x": 150, "y": 240 },
+      "vertices": [
+        { "x": 100, "y": 220 },
+        { "x": 200, "y": 220 },
+        { "x": 200, "y": 260 },
+        { "x": 100, "y": 260 }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "red-area",
+      "position": { "x": 150, "y": 320 },
+      "vertices": [
+        { "x": 80, "y": 280 },
+        { "x": 220, "y": 280 },
+        { "x": 220, "y": 360 },
+        { "x": 80, "y": 360 }
+      ]
+    }
+  ],
+  "startHint": { "x": 50, "y": 200 }
+}

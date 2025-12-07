@@ -1,0 +1,22 @@
+{
+  "name": "One Line Too Many",
+  "short_name": "One Line",
+  "description": "A mobile-first puzzle game where you draw a single line to solve puzzles",
+  "start_url": "/one-line-puzzle/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#00ff88",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/one-line-puzzle/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/one-line-puzzle/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

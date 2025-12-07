@@ -1,0 +1,41 @@
+{
+  "id": 5,
+  "name": "L-Shape Challenge",
+  "difficulty": 2,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": { "x": 50, "y": 50 },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": { "x": 250, "y": 150 },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "dot",
+      "position": { "x": 50, "y": 350 },
+      "radius": 15
+    },
+    {
+      "id": 4,
+      "type": "shape",
+      "position": { "x": 125, "y": 225 },
+      "vertices": [
+        { "x": 75, "y": 175 },
+        { "x": 175, "y": 175 },
+        { "x": 175, "y": 225 },
+        { "x": 125, "y": 225 },
+        { "x": 125, "y": 275 },
+        { "x": 75, "y": 275 }
+      ]
+    }
+  ],
+  "startHint": { "x": 50, "y": 50 }
+}

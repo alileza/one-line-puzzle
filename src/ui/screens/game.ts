@@ -1,0 +1,186 @@
+/**
+ * Main game screen with canvas and basic controls
+ */
+
+import type { GameManager } from '../../game/state/game';
+import type { CanvasContext } from '../../game/rendering/canvas';
+import { clearCanvas } from '../../game/rendering/canvas';
+import { renderBoard } from '../../game/rendering/board';
+import { renderLine } from '../../game/rendering/line';
+import { setupTouchInput, createDoubleTapDetector } from '../../game/input/touch';
+import { setupShakeDetection } from '../../game/input/shake';
+import type { Button } from '../components/button';
+import { renderButton, isPointInButton, createRestartButton, createBackButton } from '../components/button';
+
+/** Cached button instances */
+let restartButton: Button | null = null;
+let backButton: Button | null = null;
+
+/** Get or create buttons for the current canvas size */
+export function getGameButtons(width: number, _height: number): { restart: Button; back: Button } {
+  if (!restartButton || !backButton) {
+    restartButton = createRestartButton(width, _height);
+    backButton = createBackButton();
+  }
+  return { restart: restartButton, back: backButton };
+}
+
+/** Render the game screen */
+export function renderGameScreen(
+  canvasCtx: CanvasContext,
+  gameManager: GameManager
+) {
+  const { ctx, width, height } = canvasCtx;
+  const state = gameManager.getState();
+  const line = gameManager.getLine();
+
+  // Clear canvas
+  clearCanvas(ctx, width, height);
+
+  // Render puzzle if loaded
+  if (state.currentPuzzle) {
+    // Scale to fit puzzle in canvas
+    const puzzle = state.currentPuzzle;
+    const scaleX = width / puzzle.boardWidth;
+    const scaleY = height / puzzle.boardHeight;
+    const scale = Math.min(scaleX, scaleY) * 0.9; // 90% to leave some padding
+
+    // Center the puzzle
+    const offsetX = (width - puzzle.boardWidth * scale) / 2;
+    const offsetY = (height - puzzle.boardHeight * scale) / 2;
+
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    ctx.scale(scale, scale);
+
+    // Render board elements
+    renderBoard(ctx, puzzle, state.visitedDots, state.visitedShapes);
+
+    // Render the line
+    renderLine(ctx, line, state.hasViolation);
+
+    ctx.restore();
+  }
+
+  // Render UI overlay
+  renderGameUI(ctx, width, height, state.hasViolation, state.violationType);
+
+  // Render buttons
+  const buttons = getGameButtons(width, height);
+  renderButton(ctx, buttons.restart);
+  renderButton(ctx, buttons.back);
+}
+
+/** Render game UI overlay */
+function renderGameUI(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  hasViolation: boolean,
+  violationType: string | null
+) {
+  // Title
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Draw a line to solve', width / 2, 25);
+
+  // Violation message
+  if (hasViolation && violationType) {
+    ctx.fillStyle = '#ff5050';
+    ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+
+    const message = violationType === 'red-area'
+      ? 'Crossed red area!'
+      : 'Shape entered twice!';
+
+    ctx.fillText(message, width / 2, height - 40);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('Tap to retry', width / 2, height - 20);
+  }
+}
+
+/** Game screen callbacks */
+export interface GameScreenCallbacks {
+  onBackToLevelSelect: () => void;
+}
+
+/** Setup game screen with touch input */
+export function setupGameScreen(
+  canvas: HTMLCanvasElement,
+  gameManager: GameManager,
+  getScale: () => { scale: number; offsetX: number; offsetY: number },
+  callbacks?: GameScreenCallbacks
+): () => void {
+  const rect = canvas.getBoundingClientRect();
+  const buttons = getGameButtons(rect.width, rect.height);
+
+  // Double-tap detector for restart
+  const doubleTapDetector = createDoubleTapDetector(() => {
+    gameManager.reset();
+  });
+
+  // Shake detection for restart
+  const cleanupShake = setupShakeDetection(() => {
+    gameManager.reset();
+  });
+
+  // Convert screen coordinates to puzzle coordinates
+  const toPuzzleCoords = (x: number, y: number) => {
+    const { scale, offsetX, offsetY } = getScale();
+    return {
+      x: (x - offsetX) / scale,
+      y: (y - offsetY) / scale
+    };
+  };
+
+  // Check if a point hits any button
+  const checkButtonHit = (x: number, y: number): 'restart' | 'back' | null => {
+    if (isPointInButton(x, y, buttons.restart)) return 'restart';
+    if (isPointInButton(x, y, buttons.back)) return 'back';
+    return null;
+  };
+
+  const cleanupTouch = setupTouchInput(canvas, {
+    onStart: (point) => {
+      // Check button hits first
+      const buttonHit = checkButtonHit(point.x, point.y);
+      if (buttonHit === 'restart') {
+        gameManager.reset();
+        return;
+      }
+      if (buttonHit === 'back') {
+        callbacks?.onBackToLevelSelect();
+        return;
+      }
+
+      // Check for double-tap (only when not drawing)
+      const state = gameManager.getState();
+      if (!state.isDrawing && doubleTapDetector.onTap(point)) {
+        return; // Double tap handled restart
+      }
+
+      if (state.hasViolation) {
+        // Tap to retry
+        gameManager.reset();
+      } else {
+        const puzzlePoint = toPuzzleCoords(point.x, point.y);
+        gameManager.startDrawing(puzzlePoint);
+      }
+    },
+    onMove: (point) => {
+      const puzzlePoint = toPuzzleCoords(point.x, point.y);
+      gameManager.continueDrawing(puzzlePoint);
+    },
+    onEnd: (_point) => {
+      gameManager.endDrawing();
+    }
+  });
+
+  // Return combined cleanup function
+  return () => {
+    cleanupTouch();
+    cleanupShake();
+  };
+}

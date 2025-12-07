@@ -1,0 +1,53 @@
+{
+  "id": 17,
+  "name": "Cross Paths",
+  "difficulty": 5,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": { "x": 50, "y": 50 },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": { "x": 250, "y": 50 },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "dot",
+      "position": { "x": 50, "y": 350 },
+      "radius": 15
+    },
+    {
+      "id": 4,
+      "type": "dot",
+      "position": { "x": 250, "y": 350 },
+      "radius": 15
+    },
+    {
+      "id": 5,
+      "type": "shape",
+      "position": { "x": 150, "y": 200 },
+      "vertices": [
+        { "x": 135, "y": 160 },
+        { "x": 165, "y": 160 },
+        { "x": 165, "y": 190 },
+        { "x": 190, "y": 190 },
+        { "x": 190, "y": 210 },
+        { "x": 165, "y": 210 },
+        { "x": 165, "y": 240 },
+        { "x": 135, "y": 240 },
+        { "x": 135, "y": 210 },
+        { "x": 110, "y": 210 },
+        { "x": 110, "y": 190 },
+        { "x": 135, "y": 190 }
+      ]
+    }
+  ],
+  "startHint": { "x": 50, "y": 50 }
+}

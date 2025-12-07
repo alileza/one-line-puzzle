@@ -1,0 +1,33 @@
+{
+  "id": 1,
+  "name": "First Steps",
+  "difficulty": 1,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": { "x": 50, "y": 50 },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": { "x": 250, "y": 350 },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "shape",
+      "position": { "x": 150, "y": 200 },
+      "vertices": [
+        { "x": 100, "y": 150 },
+        { "x": 200, "y": 150 },
+        { "x": 200, "y": 250 },
+        { "x": 100, "y": 250 }
+      ]
+    }
+  ],
+  "startHint": { "x": 50, "y": 50 }
+}

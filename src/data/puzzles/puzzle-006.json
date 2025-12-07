@@ -1,0 +1,44 @@
+{
+  "id": 6,
+  "name": "Corridor Trap",
+  "difficulty": 2,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": { "x": 50, "y": 100 },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": { "x": 250, "y": 300 },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "red-area",
+      "position": { "x": 150, "y": 150 },
+      "vertices": [
+        { "x": 100, "y": 100 },
+        { "x": 200, "y": 100 },
+        { "x": 200, "y": 180 },
+        { "x": 100, "y": 180 }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "red-area",
+      "position": { "x": 150, "y": 270 },
+      "vertices": [
+        { "x": 100, "y": 220 },
+        { "x": 200, "y": 220 },
+        { "x": 200, "y": 300 },
+        { "x": 100, "y": 300 }
+      ]
+    }
+  ],
+  "startHint": { "x": 50, "y": 100 }
+}
