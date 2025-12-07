@@ -155,33 +155,33 @@ function renderFullSolutionHint(ctx: CanvasRenderingContext2D, puzzle: Puzzle) {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // Draw waypoints
-  for (let i = 0; i < path.length; i++) {
-    const point = path[i];
-    if (!point) continue;
+  // Only draw markers at start and end points (actual dots)
+  const startPoint = path[0];
+  const endPoint = path[path.length - 1];
 
+  if (startPoint) {
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
-    ctx.fillStyle = i === 0 ? COLORS.startGlow : COLORS.solutionLine;
+    ctx.arc(startPoint.x, startPoint.y, 8, 0, Math.PI * 2);
+    ctx.fillStyle = COLORS.startGlow;
     ctx.fill();
     ctx.strokeStyle = COLORS.solutionLineStroke;
     ctx.lineWidth = 2;
     ctx.stroke();
-
-    // Number the waypoints
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(String(i + 1), point.x, point.y);
   }
 
-  // "Follow the path" instruction
-  const midPoint = path[Math.floor(path.length / 2)];
-  if (midPoint) {
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Follow the path', midPoint.x, midPoint.y - 30);
+  if (endPoint && path.length > 1) {
+    ctx.beginPath();
+    ctx.arc(endPoint.x, endPoint.y, 8, 0, Math.PI * 2);
+    ctx.fillStyle = COLORS.solutionLine;
+    ctx.fill();
+    ctx.strokeStyle = COLORS.solutionLineStroke;
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
+
+  // "Follow the path" instruction at top
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Follow the dashed path', puzzle.boardWidth / 2, 30);
 }
