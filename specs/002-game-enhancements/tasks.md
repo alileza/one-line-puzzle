@@ -91,19 +91,19 @@
 
 ### Implementation for User Story 3
 
-- [ ] T025 [P] [US3] Create puzzle-021.json with difficulty 3 in src/data/puzzles/
-- [ ] T026 [P] [US3] Create puzzle-022.json with difficulty 3 in src/data/puzzles/
-- [ ] T027 [P] [US3] Create puzzle-023.json with difficulty 4 in src/data/puzzles/
-- [ ] T028 [P] [US3] Create puzzle-024.json with difficulty 4 in src/data/puzzles/
-- [ ] T029 [P] [US3] Create puzzle-025.json with difficulty 4 in src/data/puzzles/
-- [ ] T030 [P] [US3] Create puzzle-026.json with difficulty 4 in src/data/puzzles/
-- [ ] T031 [P] [US3] Create puzzle-027.json with difficulty 5 in src/data/puzzles/
-- [ ] T032 [P] [US3] Create puzzle-028.json with difficulty 5 in src/data/puzzles/
-- [ ] T033 [P] [US3] Create puzzle-029.json with difficulty 5 in src/data/puzzles/
-- [ ] T034 [P] [US3] Create puzzle-030.json with difficulty 5 in src/data/puzzles/
-- [ ] T035 [US3] Update puzzle index to import all 30 puzzles in src/data/puzzles/index.ts
-- [ ] T036 [US3] Validate each new puzzle has correct solutionPath via validation.ts
-- [ ] T037 [US3] Update level select grid to support scrolling for 30+ levels in src/ui/screens/level-select.ts
+- [x] T025 [P] [US3] Create puzzle-021.json with difficulty 3 in src/data/puzzles/
+- [x] T026 [P] [US3] Create puzzle-022.json with difficulty 3 in src/data/puzzles/
+- [x] T027 [P] [US3] Create puzzle-023.json with difficulty 4 in src/data/puzzles/
+- [x] T028 [P] [US3] Create puzzle-024.json with difficulty 4 in src/data/puzzles/
+- [x] T029 [P] [US3] Create puzzle-025.json with difficulty 4 in src/data/puzzles/
+- [x] T030 [P] [US3] Create puzzle-026.json with difficulty 4 in src/data/puzzles/
+- [x] T031 [P] [US3] Create puzzle-027.json with difficulty 5 in src/data/puzzles/
+- [x] T032 [P] [US3] Create puzzle-028.json with difficulty 5 in src/data/puzzles/
+- [x] T033 [P] [US3] Create puzzle-029.json with difficulty 5 in src/data/puzzles/
+- [x] T034 [P] [US3] Create puzzle-030.json with difficulty 5 in src/data/puzzles/
+- [x] T035 [US3] Update puzzle index to import all 30 puzzles in src/data/puzzles/index.ts
+- [x] T036 [US3] Validate each new puzzle has correct solutionPath via validation.ts
+- [x] T037 [US3] Update level select grid to support scrolling for 30+ levels in src/ui/screens/level-select.ts
 
 **Checkpoint**: All 30 puzzles playable, difficulty increases smoothly
 
@@ -117,14 +117,14 @@
 
 ### Implementation for User Story 4
 
-- [ ] T038 [P] [US4] Create confetti particle system in src/game/rendering/celebration.ts
-- [ ] T039 [P] [US4] Create celebration screen component in src/ui/screens/celebration.ts
-- [ ] T040 [US4] Implement star burst animation effect in src/game/rendering/celebration.ts
-- [ ] T041 [US4] Add completion detection logic in src/game/state/game.ts
-- [ ] T042 [US4] Display completion statistics on celebration screen in src/ui/screens/celebration.ts
-- [ ] T043 [US4] Add celebration screen setup and cleanup in src/main.ts
-- [ ] T044 [US4] Add 100% completion badge to level select screen in src/ui/screens/level-select.ts
-- [ ] T045 [US4] Persist gameCompleted and firstCompletionDate in src/game/state/progress.ts
+- [x] T038 [P] [US4] Create confetti particle system in src/game/rendering/celebration.ts
+- [x] T039 [P] [US4] Create celebration screen component in src/ui/screens/celebration.ts
+- [x] T040 [US4] Implement star burst animation effect in src/game/rendering/celebration.ts
+- [x] T041 [US4] Add completion detection logic in src/game/state/progress.ts
+- [x] T042 [US4] Display completion statistics on celebration screen in src/ui/screens/celebration.ts
+- [x] T043 [US4] Add celebration screen setup and cleanup in src/main.ts
+- [x] T044 [US4] Add 100% completion badge to level select screen in src/ui/screens/level-select.ts
+- [x] T045 [US4] Persist gameCompleted and firstCompletionDate in src/game/state/progress.ts
 
 **Checkpoint**: Completing all levels triggers celebration with confetti and stats
 
@@ -134,12 +134,12 @@
 
 **Purpose**: Edge cases, integration testing, and final polish
 
-- [ ] T046 [P] Handle puzzle without solutionPath (hide hint button gracefully)
-- [ ] T047 [P] Ensure existing player progress is preserved when new levels added
-- [ ] T048 [P] Verify bundle size remains under 500KB after all changes
-- [ ] T049 Test tutorial skip functionality for returning players
-- [ ] T050 Test celebration doesn't re-trigger if player already completed all levels previously
-- [ ] T051 Run quickstart.md validation - verify all dev commands work
+- [x] T046 [P] Handle puzzle without solutionPath (hide hint button gracefully)
+- [x] T047 [P] Ensure existing player progress is preserved when new levels added
+- [x] T048 [P] Verify bundle size remains under 500KB after all changes
+- [x] T049 Test tutorial skip functionality for returning players
+- [x] T050 Test celebration doesn't re-trigger if player already completed all levels previously
+- [x] T051 Run quickstart.md validation - verify all dev commands work
 
 ---
 

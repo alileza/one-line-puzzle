@@ -84,7 +84,8 @@ export function renderLevelSelectScreen(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  buttons: LevelButton[]
+  buttons: LevelButton[],
+  isGameComplete = false
 ) {
   // Clear canvas
   clearCanvas(ctx, width, height);
@@ -95,10 +96,16 @@ export function renderLevelSelectScreen(
   ctx.textAlign = 'center';
   ctx.fillText('Select Level', width / 2, 40);
 
-  // Subtitle
-  ctx.fillStyle = '#888888';
-  ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillText('Draw a line to solve each puzzle', width / 2, 60);
+  // Subtitle or completion badge
+  if (isGameComplete) {
+    ctx.fillStyle = '#00ff88';
+    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('✓ 100% Complete!', width / 2, 60);
+  } else {
+    ctx.fillStyle = '#888888';
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.fillText('Draw a line to solve each puzzle', width / 2, 60);
+  }
 
   // Render level buttons
   for (const button of buttons) {

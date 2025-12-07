@@ -1,0 +1,127 @@
+{
+  "id": 21,
+  "name": "Spiral Chaos",
+  "difficulty": 3,
+  "boardWidth": 300,
+  "boardHeight": 400,
+  "elements": [
+    {
+      "id": 1,
+      "type": "dot",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "radius": 15
+    },
+    {
+      "id": 2,
+      "type": "dot",
+      "position": {
+        "x": 250,
+        "y": 50
+      },
+      "radius": 15
+    },
+    {
+      "id": 3,
+      "type": "dot",
+      "position": {
+        "x": 150,
+        "y": 200
+      },
+      "radius": 15
+    },
+    {
+      "id": 4,
+      "type": "dot",
+      "position": {
+        "x": 250,
+        "y": 350
+      },
+      "radius": 15
+    },
+    {
+      "id": 5,
+      "type": "shape",
+      "position": {
+        "x": 100,
+        "y": 150
+      },
+      "vertices": [
+        {
+          "x": 60,
+          "y": 120
+        },
+        {
+          "x": 140,
+          "y": 120
+        },
+        {
+          "x": 140,
+          "y": 180
+        },
+        {
+          "x": 60,
+          "y": 180
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "shape",
+      "position": {
+        "x": 200,
+        "y": 280
+      },
+      "vertices": [
+        {
+          "x": 170,
+          "y": 250
+        },
+        {
+          "x": 230,
+          "y": 250
+        },
+        {
+          "x": 230,
+          "y": 310
+        },
+        {
+          "x": 170,
+          "y": 310
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "red-area",
+      "position": {
+        "x": 150,
+        "y": 100
+      },
+      "vertices": [
+        {
+          "x": 120,
+          "y": 70
+        },
+        {
+          "x": 180,
+          "y": 70
+        },
+        {
+          "x": 180,
+          "y": 130
+        },
+        {
+          "x": 120,
+          "y": 130
+        }
+      ]
+    }
+  ],
+  "startHint": {
+    "x": 50,
+    "y": 50
+  }
+}

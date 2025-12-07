@@ -26,6 +26,16 @@ import puzzle017 from './puzzle-017.json';
 import puzzle018 from './puzzle-018.json';
 import puzzle019 from './puzzle-019.json';
 import puzzle020 from './puzzle-020.json';
+import puzzle021 from './puzzle-021.json';
+import puzzle022 from './puzzle-022.json';
+import puzzle023 from './puzzle-023.json';
+import puzzle024 from './puzzle-024.json';
+import puzzle025 from './puzzle-025.json';
+import puzzle026 from './puzzle-026.json';
+import puzzle027 from './puzzle-027.json';
+import puzzle028 from './puzzle-028.json';
+import puzzle029 from './puzzle-029.json';
+import puzzle030 from './puzzle-030.json';
 
 /** All available puzzles in order */
 const PUZZLE_DATA: unknown[] = [
@@ -48,7 +58,17 @@ const PUZZLE_DATA: unknown[] = [
   puzzle017,
   puzzle018,
   puzzle019,
-  puzzle020
+  puzzle020,
+  puzzle021,
+  puzzle022,
+  puzzle023,
+  puzzle024,
+  puzzle025,
+  puzzle026,
+  puzzle027,
+  puzzle028,
+  puzzle029,
+  puzzle030
 ];
 
 /** Parsed and validated puzzles */

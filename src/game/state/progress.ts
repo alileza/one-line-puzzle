@@ -81,18 +81,36 @@ export function saveProgress(progress: PlayerProgress): void {
 }
 
 /** Mark a level as completed and unlock next */
-export function completeLevel(progress: PlayerProgress, levelId: number): PlayerProgress {
+export function completeLevel(
+  progress: PlayerProgress,
+  levelId: number,
+  totalLevels: number
+): PlayerProgress {
   const completedLevels = progress.completedLevels.includes(levelId)
     ? progress.completedLevels
     : [...progress.completedLevels, levelId];
 
   const highestUnlocked = Math.max(progress.highestUnlocked, levelId + 1);
 
+  // Check if all levels are now completed
+  const allComplete = completedLevels.length >= totalLevels;
+  const gameCompleted = allComplete || progress.gameCompleted || false;
+  const firstCompletionDate = allComplete && !progress.gameCompleted
+    ? new Date().toISOString()
+    : progress.firstCompletionDate;
+
   return {
     ...progress,
     completedLevels,
-    highestUnlocked
+    highestUnlocked,
+    gameCompleted,
+    firstCompletionDate
   };
+}
+
+/** Check if all levels are completed */
+export function isGameCompleted(progress: PlayerProgress, totalLevels: number): boolean {
+  return progress.completedLevels.length >= totalLevels;
 }
 
 /** Check if a level is unlocked */

@@ -5,8 +5,8 @@
 
 import { setupCanvas, calculateCanvasSize, createRenderLoop } from './game/rendering/canvas';
 import { createGameManager } from './game/state/game';
-import { getAllPuzzles, getNextPuzzle } from './data/puzzles/index';
-import { loadProgress, saveProgress, completeLevel, isLevelUnlocked } from './game/state/progress';
+import { getAllPuzzles, getNextPuzzle, getPuzzleCount } from './data/puzzles/index';
+import { loadProgress, saveProgress, completeLevel, isLevelUnlocked, isGameCompleted } from './game/state/progress';
 import type { PlayerProgress } from './game/state/types';
 import { renderGameScreen, setupGameScreen } from './ui/screens/game';
 import { renderSuccessScreen, setupSuccessScreen } from './ui/screens/success';
@@ -16,6 +16,7 @@ import {
   setupLevelSelectScreen
 } from './ui/screens/level-select';
 import { renderTutorialScreen, setupTutorialScreen } from './ui/screens/tutorial';
+import { renderCelebrationScreen, setupCelebrationScreen } from './ui/screens/celebration';
 
 /** Main game initialization */
 export function init() {
@@ -36,6 +37,7 @@ export function init() {
 
   // Get all puzzles
   const puzzles = getAllPuzzles();
+  const totalLevels = getPuzzleCount();
 
   // Calculate level buttons (recalculated when progress changes)
   let levelButtons = calculateLevelButtons(puzzles, progress, width, height);
@@ -103,9 +105,16 @@ export function init() {
         // Save progress when reaching success screen
         const currentPuzzle = state.currentPuzzle;
         if (currentPuzzle) {
-          progress = completeLevel(progress, currentPuzzle.id);
+          const wasGameCompleted = progress.gameCompleted;
+          progress = completeLevel(progress, currentPuzzle.id, totalLevels);
           saveProgress(progress);
           levelButtons = calculateLevelButtons(puzzles, progress, width, height);
+
+          // Check if just completed all levels for first time
+          if (!wasGameCompleted && isGameCompleted(progress, totalLevels)) {
+            gameManager.setScreen('celebration');
+            return;
+          }
         }
 
         cleanupCurrentScreen = setupSuccessScreen(canvas, {
@@ -127,6 +136,13 @@ export function init() {
         });
         break;
       }
+      case 'celebration':
+        cleanupCurrentScreen = setupCelebrationScreen(canvas, {
+          onContinue: () => {
+            gameManager.setScreen('level-select');
+          }
+        });
+        break;
       case 'level-select':
         cleanupCurrentScreen = setupLevelSelectScreen(canvas, levelButtons, {
           onSelectLevel: (puzzle) => {
@@ -166,8 +182,17 @@ export function init() {
       case 'success':
         renderSuccessScreen(canvasCtx.ctx, width, height, state.currentPuzzle, hasNextLevel);
         break;
+      case 'celebration':
+        renderCelebrationScreen(canvasCtx.ctx, width, height, totalLevels, progress.firstCompletionDate);
+        break;
       case 'level-select':
-        renderLevelSelectScreen(canvasCtx.ctx, width, height, levelButtons);
+        renderLevelSelectScreen(
+          canvasCtx.ctx,
+          width,
+          height,
+          levelButtons,
+          isGameCompleted(progress, totalLevels)
+        );
         break;
     }
   };
