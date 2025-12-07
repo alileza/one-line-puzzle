@@ -35,6 +35,14 @@ export interface RedArea extends BoardElementBase {
 /** Union type for all board element variants */
 export type BoardElement = Dot | Shape | RedArea;
 
+/** Puzzle metadata computed on load */
+export interface PuzzleMetadata {
+  dotCount: number;
+  shapeCount: number;
+  redAreaCount: number;
+  hasSolutionPath: boolean;
+}
+
 /** Puzzle definition */
 export interface Puzzle {
   id: number;
@@ -46,6 +54,8 @@ export interface Puzzle {
   startHint?: Point;
   /** Solution path for hint system - array of points forming the correct line */
   solutionPath?: Point[];
+  /** Computed metadata (not stored in JSON) */
+  metadata?: PuzzleMetadata;
 }
 
 /** Type guard for Dot elements */

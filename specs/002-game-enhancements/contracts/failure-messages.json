@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "failure-messages.json",
+  "title": "FailureMessages",
+  "description": "Structured failure messages for rule violations",
+  "type": "object",
+  "properties": {
+    "red-area": {
+      "$ref": "#/definitions/FailureMessage"
+    },
+    "shape-reentry": {
+      "$ref": "#/definitions/FailureMessage"
+    },
+    "incomplete": {
+      "$ref": "#/definitions/FailureMessage"
+    }
+  },
+  "definitions": {
+    "FailureMessage": {
+      "type": "object",
+      "required": ["type", "title", "description", "suggestion"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["red-area", "shape-reentry", "incomplete"]
+        },
+        "title": {
+          "type": "string",
+          "description": "Short, impactful headline",
+          "maxLength": 30
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief explanation of the rule",
+          "maxLength": 100
+        },
+        "suggestion": {
+          "type": "string",
+          "description": "Helpful hint for next attempt",
+          "maxLength": 100
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "red-area": {
+        "type": "red-area",
+        "title": "Crossed Red Zone!",
+        "description": "Red areas are forbidden zones.",
+        "suggestion": "Draw around the red areas to reach your goal."
+      },
+      "shape-reentry": {
+        "type": "shape-reentry",
+        "title": "Shape Entered Twice!",
+        "description": "Each shape can only be entered once.",
+        "suggestion": "Plan your path to enter each shape only once."
+      },
+      "incomplete": {
+        "type": "incomplete",
+        "title": "Almost There!",
+        "description": "You haven't touched all the dots.",
+        "suggestion": "Make sure your line passes through every blue dot."
+      }
+    }
+  ]
+}

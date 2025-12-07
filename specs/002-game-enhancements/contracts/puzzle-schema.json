@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "puzzle-schema.json",
+  "title": "Puzzle",
+  "description": "Puzzle definition with solution path for hints",
+  "type": "object",
+  "required": ["id", "name", "difficulty", "boardWidth", "boardHeight", "elements"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Unique puzzle identifier",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name for the puzzle",
+      "minLength": 1,
+      "maxLength": 50
+    },
+    "difficulty": {
+      "type": "integer",
+      "description": "Difficulty level (1-5)",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "boardWidth": {
+      "type": "number",
+      "description": "Logical board width",
+      "minimum": 100
+    },
+    "boardHeight": {
+      "type": "number",
+      "description": "Logical board height",
+      "minimum": 100
+    },
+    "elements": {
+      "type": "array",
+      "description": "Board elements (dots, shapes, red areas)",
+      "items": {
+        "$ref": "#/definitions/BoardElement"
+      },
+      "minItems": 1
+    },
+    "startHint": {
+      "$ref": "#/definitions/Point",
+      "description": "Suggested starting position"
+    },
+    "solutionPath": {
+      "type": "array",
+      "description": "Valid solution path for hint system - MUST be validated",
+      "items": {
+        "$ref": "#/definitions/Point"
+      },
+      "minItems": 2
+    }
+  },
+  "definitions": {
+    "Point": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "BoardElement": {
+      "oneOf": [
+        { "$ref": "#/definitions/Dot" },
+        { "$ref": "#/definitions/Shape" },
+        { "$ref": "#/definitions/RedArea" }
+      ]
+    },
+    "Dot": {
+      "type": "object",
+      "required": ["id", "type", "position", "radius"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "type": { "const": "dot" },
+        "position": { "$ref": "#/definitions/Point" },
+        "radius": { "type": "number", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "Shape": {
+      "type": "object",
+      "required": ["id", "type", "position", "vertices"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "type": { "const": "shape" },
+        "position": { "$ref": "#/definitions/Point" },
+        "vertices": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Point" },
+          "minItems": 3
+        }
+      },
+      "additionalProperties": false
+    },
+    "RedArea": {
+      "type": "object",
+      "required": ["id", "type", "position", "vertices"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "type": { "const": "red-area" },
+        "position": { "$ref": "#/definitions/Point" },
+        "vertices": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Point" },
+          "minItems": 3
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

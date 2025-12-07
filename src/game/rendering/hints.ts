@@ -2,9 +2,10 @@
  * Hint rendering - progressive hints for puzzle solving
  */
 
-import type { Puzzle, Dot } from '../core/types';
+import type { Puzzle, Dot, BoardElement } from '../core/types';
 import { isDot } from '../core/types';
 import type { HintLevel } from '../state/types';
+import { getElementsInSolutionOrder } from '../core/validation';
 
 /** Colors for hint rendering */
 const COLORS = {
@@ -69,48 +70,61 @@ function renderStartingPointHint(ctx: CanvasRenderingContext2D, puzzle: Puzzle) 
   ctx.fillText('Start here', startPoint.x, startPoint.y + 45);
 }
 
-/** Level 2: Highlight the next element to visit */
+/** Level 2: Highlight the next element to visit (based on solution order) */
 function renderNextElementHint(
   ctx: CanvasRenderingContext2D,
   puzzle: Puzzle,
   visitedDots: Set<number>,
-  _visitedShapes: Set<number>
+  visitedShapes: Set<number>
 ) {
-  // Find first unvisited dot
-  const dots = puzzle.elements.filter(isDot) as Dot[];
-  const unvisitedDot = dots.find(dot => !visitedDots.has(dot.id));
+  // Get elements in solution order
+  const elementsInOrder = getElementsInSolutionOrder(puzzle);
 
-  if (unvisitedDot) {
-    // Animated arrow pointing to next element
-    const time = Date.now() / 300;
-    const bounce = Math.sin(time) * 5;
-
-    // Draw arrow pointing down to the element
-    const arrowX = unvisitedDot.position.x;
-    const arrowY = unvisitedDot.position.y - 40 + bounce;
-
-    ctx.fillStyle = COLORS.nextElement;
-    ctx.beginPath();
-    ctx.moveTo(arrowX, arrowY + 15);
-    ctx.lineTo(arrowX - 8, arrowY);
-    ctx.lineTo(arrowX + 8, arrowY);
-    ctx.closePath();
-    ctx.fill();
-
-    // "Next" label
-    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Next', arrowX, arrowY - 5);
-
-    // Highlight ring around the element
-    ctx.beginPath();
-    ctx.arc(unvisitedDot.position.x, unvisitedDot.position.y, unvisitedDot.radius + 8, 0, Math.PI * 2);
-    ctx.strokeStyle = COLORS.nextElement;
-    ctx.lineWidth = 3;
-    ctx.setLineDash([5, 5]);
-    ctx.stroke();
-    ctx.setLineDash([]);
+  // Find first element not yet visited
+  let nextElement: BoardElement | null = null;
+  for (const element of elementsInOrder) {
+    if (isDot(element) && !visitedDots.has(element.id)) {
+      nextElement = element;
+      break;
+    }
+    if (!isDot(element) && !visitedShapes.has(element.id)) {
+      nextElement = element;
+      break;
+    }
   }
+
+  if (!nextElement) return;
+
+  // Animated arrow pointing to next element
+  const time = Date.now() / 300;
+  const bounce = Math.sin(time) * 5;
+
+  // Draw arrow pointing down to the element
+  const arrowX = nextElement.position.x;
+  const arrowY = nextElement.position.y - 40 + bounce;
+
+  ctx.fillStyle = COLORS.nextElement;
+  ctx.beginPath();
+  ctx.moveTo(arrowX, arrowY + 15);
+  ctx.lineTo(arrowX - 8, arrowY);
+  ctx.lineTo(arrowX + 8, arrowY);
+  ctx.closePath();
+  ctx.fill();
+
+  // "Next" label
+  ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Next', arrowX, arrowY - 5);
+
+  // Highlight ring around the element
+  const radius = isDot(nextElement) ? (nextElement as Dot).radius + 8 : 30;
+  ctx.beginPath();
+  ctx.arc(nextElement.position.x, nextElement.position.y, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = COLORS.nextElement;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([5, 5]);
+  ctx.stroke();
+  ctx.setLineDash([]);
 }
 
 /** Level 3: Show full solution path as ghost line */

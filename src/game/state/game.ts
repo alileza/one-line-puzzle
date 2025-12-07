@@ -6,7 +6,7 @@ import type { Puzzle, Point } from '../core/types';
 import { isDot, isShape } from '../core/types';
 import type { Line } from '../core/line';
 import { createLine, startLine, addPoint, endLine, resetLine, getLastSegment } from '../core/line';
-import type { GameState, Screen, HintLevel } from './types';
+import type { GameState, Screen, HintLevel, TutorialStep } from './types';
 import { createInitialState, resetPuzzleState } from './types';
 import { validateLine, checkIncrementalViolation, getNewlyTouchedDots, getNewlyEnteredShapes } from '../core/rules';
 import { markElementVisited } from '../rendering/board';
@@ -26,6 +26,12 @@ export interface GameManager {
   showHint: () => void;
   /** Reset hint level to 0 */
   hideHint: () => void;
+  /** Start tutorial at step 1 */
+  startTutorial: () => void;
+  /** Advance to next tutorial step or complete */
+  nextTutorialStep: () => void;
+  /** Skip tutorial and go to level select */
+  skipTutorial: () => void;
   subscribe: (listener: () => void) => () => void;
 }
 
@@ -184,6 +190,29 @@ export function createGameManager(): GameManager {
 
     hideHint() {
       state = { ...state, hintLevel: 0 };
+      notify();
+    },
+
+    startTutorial() {
+      state = { ...state, screen: 'tutorial', tutorialStep: 1 };
+      notify();
+    },
+
+    nextTutorialStep() {
+      const currentStep = state.tutorialStep;
+      if (currentStep === 0) return;
+
+      if (currentStep >= 3) {
+        // Tutorial complete
+        state = { ...state, screen: 'level-select', tutorialStep: 0 };
+      } else {
+        state = { ...state, tutorialStep: (currentStep + 1) as TutorialStep };
+      }
+      notify();
+    },
+
+    skipTutorial() {
+      state = { ...state, screen: 'level-select', tutorialStep: 0 };
       notify();
     },
 

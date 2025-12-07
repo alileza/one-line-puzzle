@@ -15,6 +15,7 @@ import {
   calculateLevelButtons,
   setupLevelSelectScreen
 } from './ui/screens/level-select';
+import { renderTutorialScreen, setupTutorialScreen } from './ui/screens/tutorial';
 
 /** Main game initialization */
 export function init() {
@@ -70,6 +71,24 @@ export function init() {
     const state = gameManager.getState();
 
     switch (state.screen) {
+      case 'tutorial':
+        cleanupCurrentScreen = setupTutorialScreen(canvas, {
+          onNextStep: () => {
+            gameManager.nextTutorialStep();
+            const newState = gameManager.getState();
+            if (newState.tutorialStep === 0 && newState.screen === 'level-select') {
+              // Tutorial completed - mark as seen
+              progress = { ...progress, tutorialSeen: true };
+              saveProgress(progress);
+            }
+          },
+          onSkipTutorial: () => {
+            gameManager.skipTutorial();
+            progress = { ...progress, tutorialSeen: true };
+            saveProgress(progress);
+          }
+        });
+        break;
       case 'game':
         cleanupCurrentScreen = setupGameScreen(canvas, gameManager, getScale, {
           onBackToLevelSelect: () => {
@@ -138,6 +157,9 @@ export function init() {
       : false;
 
     switch (state.screen) {
+      case 'tutorial':
+        renderTutorialScreen(canvasCtx.ctx, width, height, state.tutorialStep);
+        break;
       case 'game':
         renderGameScreen(canvasCtx, gameManager);
         break;
@@ -154,13 +176,19 @@ export function init() {
   const renderLoop = createRenderLoop();
   renderLoop.start(render);
 
-  // Initial setup - start at level select
+  // Initial setup - show tutorial for first-time players
+  if (!progress.tutorialSeen) {
+    gameManager.startTutorial();
+  }
+
   setupCurrentScreen();
 
-  // Auto-load the first unlocked incomplete level for quick start
-  const firstUnlockedLevel = puzzles.find(p => isLevelUnlocked(progress, p.id));
-  if (firstUnlockedLevel) {
-    gameManager.loadPuzzle(firstUnlockedLevel);
+  // Auto-load the first unlocked incomplete level for quick start (if not in tutorial)
+  if (progress.tutorialSeen) {
+    const firstUnlockedLevel = puzzles.find(p => isLevelUnlocked(progress, p.id));
+    if (firstUnlockedLevel) {
+      gameManager.loadPuzzle(firstUnlockedLevel);
+    }
   }
 
   console.log('One Line Too Many - Ready!');

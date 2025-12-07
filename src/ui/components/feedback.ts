@@ -4,6 +4,36 @@
 
 import type { ViolationType } from '../../game/state/types';
 
+/** Structured failure message */
+export interface FailureMessage {
+  type: 'red-area' | 'shape-reentry' | 'incomplete';
+  title: string;
+  description: string;
+  suggestion: string;
+}
+
+/** Failure message constants */
+export const FAILURE_MESSAGES: Record<string, FailureMessage> = {
+  'red-area': {
+    type: 'red-area',
+    title: 'Crossed Red Zone!',
+    description: 'Red areas are forbidden zones.',
+    suggestion: 'Draw around the red areas to reach your goal.'
+  },
+  'shape-reentry': {
+    type: 'shape-reentry',
+    title: 'Shape Entered Twice!',
+    description: 'Each shape can only be entered once.',
+    suggestion: 'Plan your path to enter each shape only once.'
+  },
+  'incomplete': {
+    type: 'incomplete',
+    title: 'Almost There!',
+    description: "You haven't touched all the dots.",
+    suggestion: 'Make sure your line passes through every blue dot.'
+  }
+};
+
 /** Check if Vibration API is supported */
 export function isHapticSupported(): boolean {
   return typeof navigator !== 'undefined' && 'vibrate' in navigator;
@@ -30,7 +60,7 @@ export function hapticFeedbackViolation() {
   }
 }
 
-/** Render failure feedback overlay */
+/** Render failure feedback overlay with specific messages */
 export function renderFailureFeedback(
   ctx: CanvasRenderingContext2D,
   width: number,
@@ -39,13 +69,16 @@ export function renderFailureFeedback(
 ) {
   if (!violationType) return;
 
+  const message = FAILURE_MESSAGES[violationType];
+  if (!message) return;
+
   // Semi-transparent overlay
   ctx.fillStyle = 'rgba(255, 80, 80, 0.2)';
   ctx.fillRect(0, 0, width, height);
 
   // Violation message box
-  const boxWidth = 250;
-  const boxHeight = 80;
+  const boxWidth = Math.min(300, width - 40);
+  const boxHeight = 140;
   const boxX = (width - boxWidth) / 2;
   const boxY = (height - boxHeight) / 2;
 
@@ -60,21 +93,41 @@ export function renderFailureFeedback(
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Violation message
+  // Title
   ctx.fillStyle = '#ff5050';
   ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
   ctx.textAlign = 'center';
+  ctx.fillText(message.title, width / 2, boxY + 30);
 
-  const message = violationType === 'red-area'
-    ? 'Crossed Red Area!'
-    : 'Shape Entered Twice!';
+  // Description
+  ctx.fillStyle = '#cccccc';
+  ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.fillText(message.description, width / 2, boxY + 55);
 
-  ctx.fillText(message, width / 2, boxY + 35);
+  // Suggestion
+  ctx.fillStyle = '#00ff88';
+  ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+
+  const suggestionWords = message.suggestion.split(' ');
+  let line1 = '';
+  let line2 = '';
+  for (let i = 0; i < suggestionWords.length; i++) {
+    const word = suggestionWords[i];
+    if (!word) continue;
+    if (i < suggestionWords.length / 2) {
+      line1 += (line1 ? ' ' : '') + word;
+    } else {
+      line2 += (line2 ? ' ' : '') + word;
+    }
+  }
+
+  ctx.fillText(line1, width / 2, boxY + 85);
+  if (line2) ctx.fillText(line2, width / 2, boxY + 100);
 
   // Retry hint
   ctx.fillStyle = '#888888';
   ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillText('Tap to retry', width / 2, boxY + 60);
+  ctx.fillText('Tap to retry', width / 2, boxY + 125);
 }
 
 /** Render incomplete puzzle feedback (not all requirements met) */

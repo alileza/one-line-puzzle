@@ -4,8 +4,15 @@
 
 import type { Puzzle, Point } from '../core/types';
 
+/** Tutorial step progression */
+export type TutorialStep = 0 | 1 | 2 | 3;
+// 0 = Not in tutorial
+// 1 = Teaching dots rule
+// 2 = Teaching shapes rule
+// 3 = Teaching red areas rule
+
 /** Available screens in the game */
-export type Screen = 'level-select' | 'game' | 'success';
+export type Screen = 'level-select' | 'game' | 'success' | 'tutorial' | 'celebration';
 
 /** Types of rule violations */
 export type ViolationType = 'red-area' | 'shape-reentry' | null;
@@ -32,6 +39,8 @@ export interface GameState {
   isDrawing: boolean;
   /** Current hint level (0 = no hint, 1-3 = progressive hints) */
   hintLevel: HintLevel;
+  /** Current tutorial step (0 if not in tutorial) */
+  tutorialStep: TutorialStep;
 }
 
 /** Create initial game state */
@@ -45,7 +54,8 @@ export function createInitialState(): GameState {
     hasViolation: false,
     violationType: null,
     isDrawing: false,
-    hintLevel: 0
+    hintLevel: 0,
+    tutorialStep: 0
   };
 }
 
@@ -69,4 +79,7 @@ export interface PlayerProgress {
   completedLevels: number[];
   highestUnlocked: number;
   lastPlayed?: string;
+  tutorialSeen?: boolean;
+  gameCompleted?: boolean;
+  firstCompletionDate?: string;
 }

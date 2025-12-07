@@ -2,7 +2,8 @@
  * Puzzle data structures and loading
  */
 
-import type { Puzzle, BoardElement } from './types';
+import type { Puzzle, BoardElement, PuzzleMetadata } from './types';
+import { isDot, isShape, isRedArea } from './types';
 
 /** Validate a puzzle has required fields */
 function validatePuzzle(data: unknown): data is Puzzle {
@@ -44,6 +45,16 @@ function validateElement(element: unknown): element is BoardElement {
   }
 }
 
+/** Compute puzzle metadata */
+export function computePuzzleMetadata(puzzle: Puzzle): PuzzleMetadata {
+  return {
+    dotCount: puzzle.elements.filter(isDot).length,
+    shapeCount: puzzle.elements.filter(isShape).length,
+    redAreaCount: puzzle.elements.filter(isRedArea).length,
+    hasSolutionPath: Boolean(puzzle.solutionPath && puzzle.solutionPath.length >= 2)
+  };
+}
+
 /** Parse and validate puzzle data from JSON */
 export function parsePuzzle(data: unknown): Puzzle {
   if (!validatePuzzle(data)) {
@@ -57,7 +68,11 @@ export function parsePuzzle(data: unknown): Puzzle {
     }
   }
 
-  return data;
+  // Compute metadata
+  const puzzle = data as Puzzle;
+  puzzle.metadata = computePuzzleMetadata(puzzle);
+
+  return puzzle;
 }
 
 /** Get all dots from a puzzle */

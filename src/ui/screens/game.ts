@@ -12,6 +12,7 @@ import { setupTouchInput, createDoubleTapDetector } from '../../game/input/touch
 import { setupShakeDetection } from '../../game/input/shake';
 import type { Button } from '../components/button';
 import { renderButton, isPointInButton, createRestartButton, createBackButton, createHintButton } from '../components/button';
+import { FAILURE_MESSAGES } from '../components/feedback';
 
 /** Cached button instances */
 let restartButton: Button | null = null;
@@ -71,15 +72,15 @@ export function renderGameScreen(
   }
 
   // Render UI overlay
-  renderGameUI(ctx, width, height, state.hasViolation, state.violationType);
+  renderGameUI(ctx, width, height, state.hasViolation, state.violationType, state.currentPuzzle);
 
   // Render buttons
   const buttons = getGameButtons(width, height);
   renderButton(ctx, buttons.restart);
   renderButton(ctx, buttons.back);
 
-  // Only show hint button if puzzle has a solution path
-  if (state.currentPuzzle?.solutionPath) {
+  // Only show hint button if puzzle has a valid solution path
+  if (state.currentPuzzle?.metadata?.hasSolutionPath) {
     renderButton(ctx, buttons.hint);
   }
 }
@@ -90,27 +91,45 @@ function renderGameUI(
   width: number,
   height: number,
   hasViolation: boolean,
-  violationType: string | null
+  violationType: string | null,
+  puzzle: import('../../game/core/types').Puzzle | null
 ) {
-  // Title
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '16px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Draw a line to solve', width / 2, 25);
+  // Contextual puzzle hints
+  if (puzzle?.metadata) {
+    const hints: string[] = [];
+    if (puzzle.metadata.dotCount > 0) {
+      hints.push(`${puzzle.metadata.dotCount} dot${puzzle.metadata.dotCount > 1 ? 's' : ''}`);
+    }
+    if (puzzle.metadata.shapeCount > 0) {
+      hints.push(`${puzzle.metadata.shapeCount} shape${puzzle.metadata.shapeCount > 1 ? 's' : ''}`);
+    }
+    if (puzzle.metadata.redAreaCount > 0) {
+      hints.push(`avoid red`);
+    }
+
+    ctx.fillStyle = '#888888';
+    ctx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+    ctx.textAlign = 'center';
+    const hintText = hints.length > 0 ? hints.join(' • ') : 'Draw a line';
+    ctx.fillText(hintText, width / 2, 25);
+  }
 
   // Violation message
   if (hasViolation && violationType) {
-    ctx.fillStyle = '#ff5050';
-    ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, sans-serif';
+    const message = FAILURE_MESSAGES[violationType];
+    if (message) {
+      ctx.fillStyle = '#ff5050';
+      ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillText(message.title, width / 2, height - 60);
 
-    const message = violationType === 'red-area'
-      ? 'Crossed red area!'
-      : 'Shape entered twice!';
+      ctx.fillStyle = '#cccccc';
+      ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillText(message.description, width / 2, height - 40);
 
-    ctx.fillText(message, width / 2, height - 40);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
-    ctx.fillText('Tap to retry', width / 2, height - 20);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillText('Tap to retry', width / 2, height - 15);
+    }
   }
 }
 

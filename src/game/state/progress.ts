@@ -13,7 +13,9 @@ function createDefaultProgress(): PlayerProgress {
     version: CURRENT_VERSION,
     completedLevels: [],
     highestUnlocked: 1,
-    lastPlayed: new Date().toISOString()
+    lastPlayed: new Date().toISOString(),
+    tutorialSeen: false,
+    gameCompleted: false
   };
 }
 
@@ -30,16 +32,18 @@ function isValidProgress(data: unknown): data is PlayerProgress {
   );
 }
 
-/** Migrate progress from older versions if needed */
+/** Migrate progress from older versions and apply defaults for new fields */
 function migrateProgress(progress: PlayerProgress): PlayerProgress {
-  // Currently only version 1, no migration needed
-  if (progress.version < CURRENT_VERSION) {
-    return {
-      ...progress,
-      version: CURRENT_VERSION
-    };
-  }
-  return progress;
+  const defaults = createDefaultProgress();
+
+  // Apply defaults for any missing fields
+  return {
+    ...defaults,
+    ...progress,
+    version: CURRENT_VERSION,
+    tutorialSeen: progress.tutorialSeen ?? defaults.tutorialSeen,
+    gameCompleted: progress.gameCompleted ?? defaults.gameCompleted
+  };
 }
 
 /** Load player progress from localStorage */

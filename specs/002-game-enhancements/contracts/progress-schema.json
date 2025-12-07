@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "progress-schema.json",
+  "title": "PlayerProgress",
+  "description": "Player progress data stored in localStorage",
+  "type": "object",
+  "required": ["version", "completedLevels", "highestUnlocked"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Schema version for migration",
+      "minimum": 1
+    },
+    "completedLevels": {
+      "type": "array",
+      "description": "List of completed puzzle IDs",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true
+    },
+    "highestUnlocked": {
+      "type": "integer",
+      "description": "Highest level number unlocked",
+      "minimum": 1
+    },
+    "lastPlayed": {
+      "type": "string",
+      "description": "ISO 8601 date of last play session",
+      "format": "date-time"
+    },
+    "tutorialSeen": {
+      "type": "boolean",
+      "description": "Whether player has seen/completed tutorial",
+      "default": false
+    },
+    "gameCompleted": {
+      "type": "boolean",
+      "description": "Whether player has completed all levels at least once",
+      "default": false
+    },
+    "firstCompletionDate": {
+      "type": "string",
+      "description": "ISO 8601 date when all levels first completed",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}
