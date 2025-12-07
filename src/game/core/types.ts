@@ -44,6 +44,8 @@ export interface Puzzle {
   boardHeight: number;
   elements: BoardElement[];
   startHint?: Point;
+  /** Solution path for hint system - array of points forming the correct line */
+  solutionPath?: Point[];
 }
 
 /** Type guard for Dot elements */

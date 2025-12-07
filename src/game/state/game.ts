@@ -6,7 +6,7 @@ import type { Puzzle, Point } from '../core/types';
 import { isDot, isShape } from '../core/types';
 import type { Line } from '../core/line';
 import { createLine, startLine, addPoint, endLine, resetLine, getLastSegment } from '../core/line';
-import type { GameState, Screen } from './types';
+import type { GameState, Screen, HintLevel } from './types';
 import { createInitialState, resetPuzzleState } from './types';
 import { validateLine, checkIncrementalViolation, getNewlyTouchedDots, getNewlyEnteredShapes } from '../core/rules';
 import { markElementVisited } from '../rendering/board';
@@ -22,6 +22,10 @@ export interface GameManager {
   continueDrawing: (point: Point) => void;
   endDrawing: () => void;
   reset: () => void;
+  /** Show next hint level (progressive hints 0 -> 1 -> 2 -> 3) */
+  showHint: () => void;
+  /** Reset hint level to 0 */
+  hideHint: () => void;
   subscribe: (listener: () => void) => () => void;
 }
 
@@ -165,6 +169,21 @@ export function createGameManager(): GameManager {
 
       state = resetPuzzleState(state);
       line = resetLine();
+      notify();
+    },
+
+    showHint() {
+      if (!state.currentPuzzle?.solutionPath) return;
+
+      // Progress to next hint level (max 3)
+      const nextLevel = Math.min(state.hintLevel + 1, 3) as HintLevel;
+      state = { ...state, hintLevel: nextLevel };
+      hapticFeedbackLight();
+      notify();
+    },
+
+    hideHint() {
+      state = { ...state, hintLevel: 0 };
       notify();
     },
 

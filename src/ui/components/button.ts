@@ -107,3 +107,21 @@ export function createBackButton(): Button {
     style: 'secondary'
   };
 }
+
+/** Create a hint button configuration */
+export function createHintButton(canvasWidth: number, _canvasHeight: number): Button {
+  const buttonWidth = 70;
+  const buttonHeight = 36;
+  const padding = 15;
+  const restartWidth = 80; // Width of restart button
+
+  return {
+    x: canvasWidth - buttonWidth - padding - restartWidth - 10, // Left of restart button
+    y: padding,
+    width: buttonWidth,
+    height: buttonHeight,
+    text: 'Hint',
+    icon: '💡',
+    style: 'secondary'
+  };
+}

@@ -74,6 +74,9 @@ export function init() {
         cleanupCurrentScreen = setupGameScreen(canvas, gameManager, getScale, {
           onBackToLevelSelect: () => {
             gameManager.setScreen('level-select');
+          },
+          onShowHint: () => {
+            gameManager.showHint();
           }
         });
         break;

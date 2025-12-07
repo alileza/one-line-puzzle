@@ -7,22 +7,25 @@ import type { CanvasContext } from '../../game/rendering/canvas';
 import { clearCanvas } from '../../game/rendering/canvas';
 import { renderBoard } from '../../game/rendering/board';
 import { renderLine } from '../../game/rendering/line';
+import { renderHints } from '../../game/rendering/hints';
 import { setupTouchInput, createDoubleTapDetector } from '../../game/input/touch';
 import { setupShakeDetection } from '../../game/input/shake';
 import type { Button } from '../components/button';
-import { renderButton, isPointInButton, createRestartButton, createBackButton } from '../components/button';
+import { renderButton, isPointInButton, createRestartButton, createBackButton, createHintButton } from '../components/button';
 
 /** Cached button instances */
 let restartButton: Button | null = null;
 let backButton: Button | null = null;
+let hintButton: Button | null = null;
 
 /** Get or create buttons for the current canvas size */
-export function getGameButtons(width: number, _height: number): { restart: Button; back: Button } {
-  if (!restartButton || !backButton) {
+export function getGameButtons(width: number, _height: number): { restart: Button; back: Button; hint: Button } {
+  if (!restartButton || !backButton || !hintButton) {
     restartButton = createRestartButton(width, _height);
     backButton = createBackButton();
+    hintButton = createHintButton(width, _height);
   }
-  return { restart: restartButton, back: backButton };
+  return { restart: restartButton, back: backButton, hint: hintButton };
 }
 
 /** Render the game screen */
@@ -56,6 +59,11 @@ export function renderGameScreen(
     // Render board elements
     renderBoard(ctx, puzzle, state.visitedDots, state.visitedShapes);
 
+    // Render hints (if active)
+    if (state.hintLevel > 0) {
+      renderHints(ctx, puzzle, state.hintLevel, state.visitedDots, state.visitedShapes);
+    }
+
     // Render the line
     renderLine(ctx, line, state.hasViolation);
 
@@ -69,6 +77,11 @@ export function renderGameScreen(
   const buttons = getGameButtons(width, height);
   renderButton(ctx, buttons.restart);
   renderButton(ctx, buttons.back);
+
+  // Only show hint button if puzzle has a solution path
+  if (state.currentPuzzle?.solutionPath) {
+    renderButton(ctx, buttons.hint);
+  }
 }
 
 /** Render game UI overlay */
@@ -104,6 +117,7 @@ function renderGameUI(
 /** Game screen callbacks */
 export interface GameScreenCallbacks {
   onBackToLevelSelect: () => void;
+  onShowHint?: () => void;
 }
 
 /** Setup game screen with touch input */
@@ -136,9 +150,10 @@ export function setupGameScreen(
   };
 
   // Check if a point hits any button
-  const checkButtonHit = (x: number, y: number): 'restart' | 'back' | null => {
+  const checkButtonHit = (x: number, y: number): 'restart' | 'back' | 'hint' | null => {
     if (isPointInButton(x, y, buttons.restart)) return 'restart';
     if (isPointInButton(x, y, buttons.back)) return 'back';
+    if (isPointInButton(x, y, buttons.hint)) return 'hint';
     return null;
   };
 
@@ -152,6 +167,10 @@ export function setupGameScreen(
       }
       if (buttonHit === 'back') {
         callbacks?.onBackToLevelSelect();
+        return;
+      }
+      if (buttonHit === 'hint') {
+        callbacks?.onShowHint?.();
         return;
       }
 
