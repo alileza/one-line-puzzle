@@ -4,9 +4,9 @@
 
 const CACHE_NAME = 'one-line-v1';
 const ASSETS_TO_CACHE = [
-  '/one-line-puzzle/',
-  '/one-line-puzzle/index.html',
-  '/one-line-puzzle/manifest.json'
+  '/',
+  '/index.html',
+  '/manifest.json'
 ];
 
 // Install event - cache assets
